@@ -44,15 +44,23 @@ class Game extends React.Component {
   }
 
   render() {
+    const remainingMoves = (this.state.matrixSize*this.state.matrixSize) - (this.state.squareStates.reduce((a,b) => a + b, 0));
     return (
-      <div className="game">
-        <div className="game-board">
-          <Board
-            diamondPositions={this.state.diamondPositions}
-            squareStates={this.state.squareStates}
-            matrixSize = {this.state.matrixSize}
-            onClick={i => this.handleClick(i)}
-          />
+      <div>
+        <h3>Find'em all </h3>
+        <div className="game">
+          <div className="game-board">
+            <Board
+              diamondPositions={this.state.diamondPositions}
+              squareStates={this.state.squareStates}
+              matrixSize = {this.state.matrixSize}
+              onClick={i => this.handleClick(i)}
+            />
+          </div>
+          <div className="game-info">
+            <div>Remaining Moves: {remainingMoves}</div>
+            <ol>{remainingMoves?'Playing':'All diamongs found'}</ol>
+          </div>
         </div>
       </div>
     );
