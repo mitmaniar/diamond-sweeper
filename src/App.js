@@ -43,11 +43,22 @@ class Game extends React.Component {
     })
   }
 
+  diamondsFound() {
+    return this.state.diamondPositions.map((position) => {
+      return this.state.squareStates[position]
+    }).reduce((a,b) => a+b, 0)
+  }
+
+  score() {
+    return (this.state.matrixSize*this.state.matrixSize) - (this.state.squareStates.reduce((a,b) => a + b, 0));
+  }
+
   render() {
-    const remainingMoves = (this.state.matrixSize*this.state.matrixSize) - (this.state.squareStates.reduce((a,b) => a + b, 0));
+    const remainingMoves = this.score();
+    const diamongsFound = this.diamondsFound();
     return (
       <div>
-        <h3>Find'em all </h3>
+        <h4>There are {this.state.diamondCount} diamonds. Find'em all. </h4>
         <div className="game">
           <div className="game-board">
             <Board
@@ -58,8 +69,8 @@ class Game extends React.Component {
             />
           </div>
           <div className="game-info">
-            <div>Remaining Moves: {remainingMoves}</div>
-            <ol>{remainingMoves?'Playing':'All diamongs found'}</ol>
+            <div>Score: {remainingMoves}</div>
+            <div>{(diamongsFound<this.state.diamondCount)?`${diamongsFound} Diamonds found`:'All diamonds found, Bravo'}</div>
           </div>
         </div>
       </div>
