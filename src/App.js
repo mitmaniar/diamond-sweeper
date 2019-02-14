@@ -23,7 +23,8 @@ class Game extends React.Component {
       matrixSize: matrixSize,
       diamondCount: diamondCount,
       squareStates: Array(matrixSize*matrixSize).fill(0),
-      diamondPositions: this.generateDiamondPositions(matrixSize, diamondCount)
+      diamondPositions: this.generateDiamondPositions(matrixSize, diamondCount),
+      hint:''
     };
   }
 
@@ -39,10 +40,37 @@ class Game extends React.Component {
   }
 
   handleClick(i) {
+    const isBlank = this.state.diamondPositions.indexOf(i) === -1;
+    let hint = '';
+    if(isBlank) {
+      
+    }
     const updatedStates = [...this.state.squareStates];
     updatedStates[i] = 1;
     this.setState({
       squareStates: updatedStates
+    })
+  }
+
+  getHintDirection(i) {
+    let direction = '';
+    let distance = this.state.matrixSize;
+    const iLocation = [(i/this.state.matrixSize),(i%this.state.matrixSize) - 1];
+    const matrixPositions = this.state.diamondPositions.map((pos) => {
+      const diamondLocation = [(pos/this.state.matrixSize), (pos%this.state.matrixSize) - 1];
+
+      const dVertical = Math.abs(iLocation[0] - diamondLocation[0]);
+      const dHorizontal = Math.abs(iLocation[1] - diamondLocation[1]);
+
+      if(dVertical<distance) {
+        distance = dVertical;
+      }
+
+      if(dHorizontal<distance) {
+        distance = dHorizontal;
+      }
+
+      return diamondLocation;
     })
   }
 
@@ -68,15 +96,14 @@ class Game extends React.Component {
               diamondPositions={this.state.diamondPositions}
               squareStates={this.state.squareStates}
               matrixSize = {this.state.matrixSize}
+              hint = {this.state.hint}
               onClick={i => this.handleClick(i)}
             />
           </div>
           <div className="game-info">
             <div>Score: {remainingMoves}</div>
             <div>{(diamongsFound<this.state.diamondCount)?`${diamongsFound} Diamonds found`:'All diamonds found, Bravo'}</div>
-            <div><button onClick={() => {
-              this.restart()
-              }}>Restart</button></div>
+            <div><button onClick={() => {this.restart()}}>Restart</button></div>
           </div>
         </div>
       </div>

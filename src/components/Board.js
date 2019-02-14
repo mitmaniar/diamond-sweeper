@@ -6,6 +6,7 @@ export default class Board extends React.Component {
         <Square
           openState={this.props.squareStates[i]}
           diamond={this.props.diamondPositions.indexOf(i)>=0}
+          hint={this.props.hint}
           onClick={() => this.props.onClick(i)}
         />
       );
