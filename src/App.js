@@ -8,20 +8,23 @@ import { getRandomIntInclusive } from "./utlis";
 class Game extends React.Component {
   constructor(props) {
     super(props);
+    this.state = this.getDefaultState();
+  }
+
+  restart() {
+    this.setState(this.getDefaultState());
+  }
+
+  getDefaultState() {
     const matrixSize = 8;
     const diamondCount = 8;
-
-    const state = {
+    this.state = {}
+    return {
       matrixSize: matrixSize,
       diamondCount: diamondCount,
       squareStates: Array(matrixSize*matrixSize).fill(0),
-      diamondPositions: this.generateDiamondPositions(matrixSize, diamondCount),
-      history: []
+      diamondPositions: this.generateDiamondPositions(matrixSize, diamondCount)
     };
-
-    state.history.push(...state.squareStates);
-
-    this.state = state;
   }
 
   generateDiamondPositions(matrixSize, diamondCount) {
@@ -71,6 +74,9 @@ class Game extends React.Component {
           <div className="game-info">
             <div>Score: {remainingMoves}</div>
             <div>{(diamongsFound<this.state.diamondCount)?`${diamongsFound} Diamonds found`:'All diamonds found, Bravo'}</div>
+            <div><button onClick={() => {
+              this.restart()
+              }}>Restart</button></div>
           </div>
         </div>
       </div>
