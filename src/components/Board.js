@@ -9,6 +9,7 @@ export default class Board extends React.Component {
           hint={this.props.hint}
           hintPos = {this.props.hintPos}
           squarePos = {i}
+          key = {i}
           onClick={() => this.props.onClick(i)}
         />
       );
@@ -21,7 +22,7 @@ export default class Board extends React.Component {
           {
             matrix.map((row,rowNo) => {
               return (
-                <div className="board-row">
+                <div key = {row+'d'+rowNo} className="board-row">
                   {
                     matrix.map((col, columnNo) => {
                       const squareIndex = ((rowNo) * this.props.matrixSize) + columnNo;

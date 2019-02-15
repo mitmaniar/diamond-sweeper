@@ -41,6 +41,9 @@ class Game extends React.Component {
   }
 
   handleClick(i) {
+    if(this.diamondsFound() === this.state.diamondCount) {
+      return;
+    }
     const isBlank = this.state.diamondPositions.indexOf(i) === -1;
     let hint = isBlank?this.getHintDirection(i):'';
     const updatedStates = [...this.state.squareStates];
