@@ -24,7 +24,8 @@ class Game extends React.Component {
       diamondCount: diamondCount,
       squareStates: Array(matrixSize*matrixSize).fill(0),
       diamondPositions: this.generateDiamondPositions(matrixSize, diamondCount),
-      hint:''
+      hint:'',
+      hintPos:-1
     };
   }
 
@@ -41,37 +42,46 @@ class Game extends React.Component {
 
   handleClick(i) {
     const isBlank = this.state.diamondPositions.indexOf(i) === -1;
-    let hint = '';
-    if(isBlank) {
-      
-    }
+    let hint = isBlank?this.getHintDirection(i):'';
     const updatedStates = [...this.state.squareStates];
     updatedStates[i] = 1;
     this.setState({
-      squareStates: updatedStates
+      squareStates: updatedStates,
+      hint: hint,
+      hintPos: i
     })
   }
 
   getHintDirection(i) {
-    let direction = '';
-    let distance = this.state.matrixSize;
-    const iLocation = [(i/this.state.matrixSize),(i%this.state.matrixSize) - 1];
-    const matrixPositions = this.state.diamondPositions.map((pos) => {
-      const diamondLocation = [(pos/this.state.matrixSize), (pos%this.state.matrixSize) - 1];
+    const matrixDistance = this.state.diamondPositions.filter((pos) => !this.state.squareStates[pos]).map((pos) => {
+      return [pos,this.getDistance(i,pos)];
+    });
+    matrixDistance.sort((a,b) => a[1]<b[1]?-1:a[1]>b[1]?1:0);
+    const closestDiamondPos = matrixDistance[0][0];
+    return this.calcDirection(i,closestDiamondPos);
+  }
 
-      const dVertical = Math.abs(iLocation[0] - diamondLocation[0]);
-      const dHorizontal = Math.abs(iLocation[1] - diamondLocation[1]);
+  calcDirection(i,j) {
+    let vector = '';
+    const iLocation = this.getLocation(i);
+    const jLocation = this.getLocation(j);
+    if(Math.abs(iLocation[0] - jLocation[0]) > Math.abs(iLocation[1] - jLocation[1])) {
+      vector = jLocation[0]<iLocation[0]?'up':'down'
+    } 
+    else {
+      vector = jLocation[1]<iLocation[1]?'left':'right'
+    }
+    return vector;
+  }
 
-      if(dVertical<distance) {
-        distance = dVertical;
-      }
+  getDistance(i,j) {
+    const iLocation = this.getLocation(i);
+    const jLocation = this.getLocation(j);
+    return Math.abs(iLocation[0] - jLocation[0]) + Math.abs(iLocation[1] - jLocation[1])
+  }
 
-      if(dHorizontal<distance) {
-        distance = dHorizontal;
-      }
-
-      return diamondLocation;
-    })
+  getLocation(i) {
+    return [parseInt(i/this.state.matrixSize),(i%this.state.matrixSize)];
   }
 
   diamondsFound() {
@@ -97,6 +107,7 @@ class Game extends React.Component {
               squareStates={this.state.squareStates}
               matrixSize = {this.state.matrixSize}
               hint = {this.state.hint}
+              hintPos = {this.state.hintPos}
               onClick={i => this.handleClick(i)}
             />
           </div>
