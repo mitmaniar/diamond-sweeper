@@ -6,20 +6,19 @@ import Board from './components/Board'
 import { getRandomIntInclusive } from "./utlis";
 
 class Game extends React.Component {
+  defaultMatrixSize = 8;
   constructor(props) {
     super(props);
-    this.state = this.getDefaultState();
+    this.state = this.getDefaultState(this.defaultMatrixSize, this.defaultMatrixSize);
   }
 
   restart() {
-    this.setState(this.getDefaultState());
+    this.setState(this.getDefaultState(this.state.matrixSizeInput, this.state.matrixSizeInput));
   }
 
-  getDefaultState() {
-    const matrixSize = 8;
-    const diamondCount = 8;
-    this.state = {}
+  getDefaultState(matrixSize, diamondCount) {
     return {
+      matrixSizeInput: matrixSize,
       matrixSize: matrixSize,
       diamondCount: diamondCount,
       squareStates: Array(matrixSize*matrixSize).fill(0),
@@ -97,6 +96,11 @@ class Game extends React.Component {
     return (this.state.matrixSize*this.state.matrixSize) - (this.state.squareStates.reduce((a,b) => a + b, 0));
   }
 
+  handleMatrixSize(event) {
+    const size = event.target.value || this.defaultMatrixSize;
+    this.setState({matrixSizeInput: parseInt(size)});
+  }
+
   render() {
     const remainingMoves = this.score();
     const diamongsFound = this.diamondsFound();
@@ -117,6 +121,7 @@ class Game extends React.Component {
           <div className="game-info">
             <div>Score: {remainingMoves}</div>
             <div>{(diamongsFound<this.state.diamondCount)?`${diamongsFound} Diamonds found`:'All diamonds found, Bravo'}</div>
+            <div><label>Matrix Size: <input type="number" value={this.state.matrixSizeInput} onChange={(event) => this.handleMatrixSize(event)}/></label></div>
             <div><button onClick={() => {this.restart()}}>Restart</button></div>
           </div>
         </div>
